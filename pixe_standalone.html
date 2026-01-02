@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Pixe - Photography Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-image: url('https://img.freepik.com/free-photo/beautiful-shot-forest-with-tall-green-trees_181624-20615.jpg?semt=ais_hybrid&w=740&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100vh;
+            padding: 40px;
+        }
+
+        .hero-section h1 {
+            color: #fff;
+            font-size: 48px;
+            font-weight: 700;
+            font-family: 'Georgia', serif;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-section p {
+            color: #bbb;
+            margin-bottom: 40px;
+            font-size: 16px;
+            font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .hero-buttons button {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(45, 80, 22, 0.3);
+        }
+
+        .hero-buttons button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(45, 80, 22, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            color: #333;
+            font-size: 24px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2d5016;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(45, 80, 22, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .challenge-area {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .challenge-area.active {
+            display: block;
+        }
+
+        .room-info {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .room-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .room-details {
+            display: flex;
+            gap: 30px;
+            margin-top: 15px;
+        }
+
+        .room-details p {
+            font-size: 14px;
+        }
+
+        .room-details strong {
+            font-size: 18px;
+            display: block;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed #2d5016;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+            background: rgba(74, 124, 44, 0.05);
+        }
+
+        .upload-area:hover {
+            background: rgba(74, 124, 44, 0.1);
+            border-color: #1a3109;
+        }
+
+        .upload-area.uploaded {
+            border-color: #4caf50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            color: #2d5016;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtext {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .uploaded-preview {
+            display: none;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .uploaded-preview.show {
+            display: block;
+        }
+
+        .uploaded-preview img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        /* Participants Status */
+        .participants-status {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .participants-status h4 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .participants-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .participant-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+        }
+
+        .participant-item.uploaded {
+            border-color: #4caf50;
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        .participant-item.current {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .participant-name {
+            font-size: 12px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+
+        .participant-status {
+            font-size: 10px;
+            color: #999;
+        }
+
+        .participant-status.ok {
+            color: #4caf50;
+            font-weight: 600;
+        }
+
+        /* Status Message */
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .status-message.waiting {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-message.uploading {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-message.voting {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .photo-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .photo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .photo-card.voted {
+            border: 3px solid #2d5016;
+        }
+
+        .photo-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .photo-info {
+            padding: 15px;
+        }
+
+        .uploader-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .uploader-details {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .vote-count {
+            font-size: 14px;
+            color: #2d5016;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .vote-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .vote-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(45, 80, 22, 0.4);
+        }
+
+        .vote-btn.voted {
+            background: #4caf50;
+        }
+
+        .vote-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .results-screen.active {
+            display: block;
+        }
+
+        .results-screen h2 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .winner-display {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .winner-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .winner-tag {
+            font-size: 28px;
+            font-weight: 700;
+            color: #f1c40f;
+            margin-bottom: 15px;
+        }
+
+        .winner-info h3 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .winner-info p {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .new-challenge-btn {
+            margin-top: 30px;
+            padding: 14px 35px;
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .new-challenge-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(45, 80, 22, 0.4);
+        }
+
+        /* Voting Timer */
+        .voting-timer {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4444;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            font-size: 32px;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(255, 68, 68, 0.4);
+            z-index: 999;
+        }
+
+        .voting-timer.active {
+            display: block;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div id="heroSection" class="hero-section">
+        <h1>The Pixe</h1>
+        <p>Challenge your friends in photography battles</p>
+        <div class="hero-buttons">
+            <button onclick="showModal('createModal')">Create Challenge</button>
+            <button onclick="showModal('joinModal')">Join Challenge</button>
+        </div>
+    </div>
+
+    <!-- Create Room Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Challenge</h2>
+                <button class="close-btn" onclick="closeModal('createModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" id="createUserName" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label>Maximum Participants (2-10)</label>
+                <input type="number" id="maxParticipants" min="2" max="10" value="4">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal('createModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="createRoom()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Room Modal -->
+    <div id="joinModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Join Challenge</h2>
+                <button class="close-btn" onclick="closeModal('joinModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" id="joinUserName" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label>Room ID</label>
+                <input type="text" id="roomId" placeholder="Enter room code" style="text-transform: uppercase;">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal('joinModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="joinRoom()">Join</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Challenge Area -->
+    <div class="container">
+        <div id="challengeArea" class="challenge-area">
+            <!-- Room Info -->
+            <div class="room-info">
+                <h3>Challenge Room</h3>
+                <div class="room-details">
+                    <div>
+                        <p>Room ID</p>
+                        <strong id="roomIdDisplay">------</strong>
+                    </div>
+                    <div>
+                        <p>Participants</p>
+                        <strong id="participantCount">0/0</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Message -->
+            <div id="statusMessage" class="status-message"></div>
+
+            <!-- Participants Status -->
+            <div class="participants-status">
+                <h4>Participants</h4>
+                <div id="participantsList" class="participants-list"></div>
+            </div>
+
+            <!-- Upload Section -->
+            <div id="uploadSection">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📸</div>
+                    <div class="upload-text">Click to upload your photo</div>
+                    <div class="upload-subtext">or drag and drop (JPG, PNG - max 10MB)</div>
+                    <input type="file" id="photoInput" accept="image/*">
+                </div>
+                <div class="uploaded-preview" id="uploadedPreview">
+                    <img id="previewImg" src="" alt="Preview">
+                </div>
+            </div>
+
+            <!-- Gallery (Voting Section) -->
+            <div id="votingSection" style="display: none;">
+                <div id="galleryGrid" class="gallery-grid"></div>
+            </div>
+
+            <!-- Results Screen -->
+            <div id="resultsScreen" class="results-screen">
+                <h2>🏆 Challenge Results</h2>
+                <div id="winnerContainer"></div>
+                <button class="new-challenge-btn" onclick="location.reload()">Start New Challenge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voting Timer -->
+    <div id="votingTimer" class="voting-timer">01:00</div>
+
+    <script>
+        let currentUser = null;
+        let currentRoom = null;
+        let uploadedImage = null;
+        let pollInterval = null;
+        let votingTimer = null;
+
+        // Local storage keys
+        const STORAGE_KEYS = {
+            ROOMS: 'pixe_challenge_rooms'
+        };
+
+        // Initialize localStorage
+        function initStorage() {
+            if (!localStorage.getItem(STORAGE_KEYS.ROOMS)) {
+                localStorage.setItem(STORAGE_KEYS.ROOMS, JSON.stringify({}));
+            }
+        }
+
+        // Room management functions
+        function getAllRooms() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEYS.ROOMS)) || {};
+        }
+
+        function saveRoom(room) {
+            const rooms = getAllRooms();
+            rooms[room.id] = room;
+            localStorage.setItem(STORAGE_KEYS.ROOMS, JSON.stringify(rooms));
+            
+            // Trigger storage event for cross-tab communication
+            window.dispatchEvent(new Event('storage'));
+        }
+
+        function getRoom(roomId) {
+            const rooms = getAllRooms();
+            return rooms[roomId] || null;
+        }
+
+        // ID generation
+        function generateId() {
+            return Math.random().toString(36).substr(2, 9);
+        }
+
+        function generateRoomId() {
+            return Array.from({length: 6}, () => 
+                'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 36)]
+            ).join('');
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Create room
+        function createRoom() {
+            const userName = document.getElementById('createUserName').value.trim();
+            const maxParticipants = parseInt(document.getElementById('maxParticipants').value);
+
+            if (!userName) {
+                alert('Please enter your name');
+                return;
+            }
+
+            if (maxParticipants < 2 || maxParticipants > 10) {
+                alert('Maximum participants must be between 2 and 10');
+                return;
+            }
+
+            const userId = generateId();
+            const roomId = generateRoomId();
+
+            currentUser = { id: userId, name: userName };
+
+            currentRoom = {
+                id: roomId,
+                created_by: userId,
+                max_participants: maxParticipants,
+                status: 'waiting',
+                created_at: new Date().toISOString(),
+                participants: [{
+                    user_id: userId,
+                    user_name: userName,
+                    has_uploaded: false
+                }],
+                photos: [],
+                votes: []
+            };
+
+            saveRoom(currentRoom);
+            closeModal('createModal');
+            showChallengeArea();
+            startPolling();
+        }
+
+        // Join room
+        function joinRoom() {
+            const userName = document.getElementById('joinUserName').value.trim();
+            const roomId = document.getElementById('roomId').value.trim().toUpperCase();
+
+            if (!userName) {
+                alert('Please enter your name');
+                return;
+            }
+
+            if (!roomId) {
+                alert('Please enter a room ID');
+                return;
+            }
+
+            const room = getRoom(roomId);
+
+            if (!room) {
+                alert('Room not found');
+                return;
+            }
+
+            if (room.participants.length >= room.max_participants) {
+                alert('Room is full');
+                return;
+            }
+
+            if (room.status !== 'waiting') {
+                alert('Room has already started');
+                return;
+            }
+
+            const userId = generateId();
+            currentUser = { id: userId, name: userName };
+
+            room.participants.push({
+                user_id: userId,
+                user_name: userName,
+                has_uploaded: false
+            });
+
+            // Transition to uploading if room is full
+            if (room.participants.length === room.max_participants) {
+                room.status = 'uploading';
+            }
+
+            saveRoom(room);
+            currentRoom = room;
+            closeModal('joinModal');
+            showChallengeArea();
+            startPolling();
+        }
+
+        // Show challenge area
+        function showChallengeArea() {
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('challengeArea').classList.add('active');
+            updateRoomInfo();
+        }
+
+        // Update room info display
+        function updateRoomInfo() {
+            document.getElementById('roomIdDisplay').textContent = currentRoom.id;
+            document.getElementById('participantCount').textContent = 
+                `${currentRoom.participants.length}/${currentRoom.max_participants}`;
+            
+            updateParticipantsList();
+            updateStatusMessage();
+        }
+
+        // Update participants list
+        function updateParticipantsList() {
+            const list = document.getElementById('participantsList');
+            list.innerHTML = '';
+
+            currentRoom.participants.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'participant-item';
+                if (p.user_id === currentUser.id) item.classList.add('current');
+                if (p.has_uploaded) item.classList.add('uploaded');
+
+                item.innerHTML = `
+                    <div class="participant-name">${p.user_name}</div>
+                    <div class="participant-status ${p.has_uploaded ? 'ok' : ''}">
+                        ${p.has_uploaded ? '✓ Uploaded' : 'Waiting...'}
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // Update status message
+        function updateStatusMessage() {
+            const msg = document.getElementById('statusMessage');
+            
+            if (currentRoom.status === 'waiting') {
+                msg.className = 'status-message waiting';
+                msg.textContent = `Waiting for participants... (${currentRoom.participants.length}/${currentRoom.max_participants})`;
+                msg.style.display = 'block';
+            } else if (currentRoom.status === 'uploading') {
+                msg.className = 'status-message uploading';
+                msg.textContent = '📸 Upload your photo now!';
+                msg.style.display = 'block';
+            } else if (currentRoom.status === 'voting') {
+                msg.className = 'status-message voting';
+                msg.textContent = '🗳️ Voting in progress!';
+                msg.style.display = 'block';
+            } else {
+                msg.style.display = 'none';
+            }
+        }
+
+        // Handle photo upload
+        function handlePhotoUpload() {
+            const file = document.getElementById('photoInput').files[0];
+            if (!file) return;
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size must be less than 10MB');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                uploadedImage = e.target.result;
+                document.getElementById('previewImg').src = uploadedImage;
+                document.getElementById('uploadedPreview').classList.add('show');
+                document.getElementById('uploadArea').classList.add('uploaded');
+
+                // Save photo to room
+                const room = getRoom(currentRoom.id);
+                
+                room.photos.push({
+                    id: generateId(),
+                    user_id: currentUser.id,
+                    user_name: currentUser.name,
+                    image_data: uploadedImage,
+                    uploaded_at: new Date().toISOString()
+                });
+
+                // Mark participant as uploaded
+                const participant = room.participants.find(p => p.user_id === currentUser.id);
+                if (participant) {
+                    participant.has_uploaded = true;
+                }
+
+                // Check if all participants have uploaded
+                if (room.participants.every(p => p.has_uploaded)) {
+                    room.status = 'voting';
+                }
+
+                saveRoom(room);
+                currentRoom = room;
+                updateRoomInfo();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Setup upload area
+        function setupUploadArea() {
+            const uploadArea = document.getElementById('uploadArea');
+            uploadArea.onclick = () => document.getElementById('photoInput').click();
+            
+            document.getElementById('photoInput').onchange = handlePhotoUpload;
+            
+            uploadArea.ondragover = (e) => {
+                e.preventDefault();
+                uploadArea.style.background = 'rgba(74, 124, 44, 0.2)';
+            };
+            
+            uploadArea.ondragleave = () => {
+                uploadArea.style.background = '';
+            };
+            
+            uploadArea.ondrop = (e) => {
+                e.preventDefault();
+                uploadArea.style.background = '';
+                const files = e.dataTransfer.files;
+                if (files[0]) {
+                    const input = document.getElementById('photoInput');
+                    input.files = files;
+                    handlePhotoUpload();
+                }
+            };
+        }
+
+        // Start polling for room updates
+        function startPolling() {
+            if (pollInterval) clearInterval(pollInterval);
+            
+            pollInterval = setInterval(() => {
+                const room = getRoom(currentRoom.id);
+                
+                if (room) {
+                    currentRoom = room;
+                    updateRoomInfo();
+
+                    // State transitions
+                    if (room.status === 'uploading') {
+                        document.getElementById('uploadSection').style.display = 'block';
+                        document.getElementById('votingSection').style.display = 'none';
+                        document.getElementById('resultsScreen').classList.remove('active');
+                    }
+
+                    if (room.status === 'voting') {
+                        showVotingArea();
+                        if (!votingTimer) {
+                            startVotingTimer();
+                        }
+                    }
+
+                    if (room.status === 'completed') {
+                        showResults();
+                        clearInterval(pollInterval);
+                    }
+                }
+            }, 1000); // Poll every second
+        }
+
+        // Show voting area
+        function showVotingArea() {
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('votingSection').style.display = 'block';
+
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+
+            currentRoom.photos.forEach(photo => {
+                const card = document.createElement('div');
+                card.className = 'photo-card';
+
+                const img = document.createElement('img');
+                img.src = photo.image_data;
+                img.className = 'photo-image';
+                
+                const photoInfo = document.createElement('div');
+                photoInfo.className = 'photo-info';
+                
+                const hasVoted = currentRoom.votes.some(v => 
+                    v.voter_id === currentUser.id && v.photo_id === photo.id
+                );
+                
+                const voteCount = currentRoom.votes.filter(v => v.photo_id === photo.id).length;
+
+                photoInfo.innerHTML = `
+                    <div class="uploader-name">${photo.user_name}</div>
+                    <div class="uploader-details">Uploaded at ${new Date(photo.uploaded_at).toLocaleTimeString()}</div>
+                    <div class="vote-count">${voteCount} vote${voteCount !== 1 ? 's' : ''}</div>
+                    <button class="vote-btn ${hasVoted ? 'voted' : ''}" 
+                            onclick="vote('${photo.id}')"
+                            ${photo.user_id === currentUser.id ? 'disabled' : ''}>
+                        ${photo.user_id === currentUser.id ? "Can't vote own photo" : (hasVoted ? '✓ Voted' : 'Vote')}
+                    </button>
+                `;
+
+                card.appendChild(img);
+                card.appendChild(photoInfo);
+                
+                if (hasVoted) card.classList.add('voted');
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Vote for photo
+        function vote(photoId) {
+            const room = getRoom(currentRoom.id);
+            
+            // Check if already voted
+            const alreadyVoted = room.votes.some(v => 
+                v.voter_id === currentUser.id && v.photo_id === photoId
+            );
+
+            if (alreadyVoted) {
+                alert('You have already voted for this photo');
+                return;
+            }
+
+            room.votes.push({
+                voter_id: currentUser.id,
+                photo_id: photoId,
+                voted_at: new Date().toISOString()
+            });
+
+            saveRoom(room);
+            currentRoom = room;
+            showVotingArea();
+        }
+
+        // Start voting timer
+        function startVotingTimer() {
+            const timer = document.getElementById('votingTimer');
+            timer.classList.add('active');
+            let seconds = 60;
+
+            votingTimer = setInterval(() => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                timer.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+                if (--seconds < 0) {
+                    clearInterval(votingTimer);
+                    timer.classList.remove('active');
+                    
+                    // End voting
+                    const room = getRoom(currentRoom.id);
+                    if (room) {
+                        room.status = 'completed';
+                        saveRoom(room);
+                        currentRoom = room;
+                        showResults();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Show results
+        function showResults() {
+            document.getElementById('votingSection').style.display = 'none';
+            document.getElementById('resultsScreen').classList.add('active');
+            document.getElementById('votingTimer').classList.remove('active');
+
+            if (currentRoom.photos.length === 0) {
+                document.getElementById('winnerContainer').innerHTML = '<p>No photos submitted</p>';
+                return;
+            }
+
+            // Find winner (photo with most votes)
+            const photoVotes = currentRoom.photos.map(photo => ({
+                photo: photo,
+                voteCount: currentRoom.votes.filter(v => v.photo_id === photo.id).length
+            }));
+
+            const winner = photoVotes.reduce((prev, current) => 
+                current.voteCount > prev.voteCount ? current : prev
+            );
+
+            const container = document.getElementById('winnerContainer');
+            container.innerHTML = `
+                <div class="winner-display">
+                    <img src="${winner.photo.image_data}" class="winner-image" alt="Winner">
+                    <div class="winner-tag">🏆 WINNER 🏆</div>
+                    <div class="winner-info">
+                        <h3>${winner.photo.user_name}</h3>
+                        <p>${winner.voteCount} vote${winner.voteCount !== 1 ? 's' : ''}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Listen for storage changes (cross-tab communication)
+        window.addEventListener('storage', () => {
+            if (currentRoom) {
+                const updatedRoom = getRoom(currentRoom.id);
+                if (updatedRoom) {
+                    currentRoom = updatedRoom;
+                    updateRoomInfo();
+                }
+            }
+        });
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            initStorage();
+            setupUploadArea();
+        });
+    </script>
+</body>
+</html>
